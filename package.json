@@ -1,10 +1,10 @@
 {
-    "name": "com.hecomi.ulipsync",
-    "version": "3.1.6",
+    "name": "media.moondust.ulipsync",
+    "version": "3.1.7",
     "displayName": "uLipSync",
     "description": "A MFCC-based LipSync plugin for Unity using Job and Burst Compiler",
     "author": {
-        "name": "hecomi",
+        "name": "MoonDust Media (derived from hecomi)",
         "url": "https://tips.hecomi.com"
     },
     "repository": {

@@ -282,12 +282,12 @@ public class uLipSync : MonoBehaviour
 
     void ScheduleJob()
     {
+        int index = 0;
         lock (_lockObject)
         {
             if (!_isDataReceived || !_allocated) return;
             _isDataReceived = false;
 
-            int index = 0;
             _inputData.CopyFrom(_rawInputData);
             _means.CopyFrom(profile.means);
             _standardDeviations.CopyFrom(profile.standardDeviation);

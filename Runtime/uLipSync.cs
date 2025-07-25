@@ -116,16 +116,15 @@ public class uLipSync : MonoBehaviour
 
     void AllocateBuffers()
     {
-        if (_allocated)
-        {
-            DisposeBuffers();
-        }
-        _allocated = true;
-
-        _jobHandle.Complete();
-
         lock (_lockObject)
         {
+            if (_allocated)
+            {
+                DisposeBuffers();
+            }
+            _allocated = true;
+
+            _jobHandle.Complete();
             int n = inputSampleCount;
             int phonemeCount = profile ? profile.mfccs.Count : 1;
             _rawInputData = new NativeArray<float>(n, Allocator.Persistent);
@@ -152,13 +151,13 @@ public class uLipSync : MonoBehaviour
 
     void DisposeBuffers()
     {
-        if (!_allocated) return;
-        _allocated = false;
-
-        _jobHandle.Complete();
-
         lock (_lockObject)
         {
+            if (!_allocated) return;
+            _allocated = false;
+
+            _jobHandle.Complete();
+
             _rawInputData.Dispose();
             _inputData.Dispose();
             _mfcc.Dispose();
@@ -283,12 +282,12 @@ public class uLipSync : MonoBehaviour
 
     void ScheduleJob()
     {
-        if (!_isDataReceived) return;
-        _isDataReceived = false;
-
-        int index = 0;
         lock (_lockObject)
         {
+            if (!_isDataReceived || !_allocated) return;
+            _isDataReceived = false;
+
+            int index = 0;
             _inputData.CopyFrom(_rawInputData);
             _means.CopyFrom(profile.means);
             _standardDeviations.CopyFrom(profile.standardDeviation);
@@ -363,10 +362,10 @@ public class uLipSync : MonoBehaviour
 
     public void OnDataReceived(float[] input, int channels)
     {
-        if (_rawInputData.Length == 0) return;
-
         lock (_lockObject)
         {
+            if (!_allocated || _rawInputData.Length == 0) return;
+
             int n = _rawInputData.Length;
             _index = _index % n;
             for (int i = 0; i < input.Length; i += channels) 
